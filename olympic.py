@@ -36,8 +36,23 @@ flag_ID = ["CAN_FLAG.png",
            "ITA_FLAG.png",
            "KAZ_FLAG.png",
            "KOR_FLAG.png",
-           "SWE_FLAG.png"
+           "SWE_FLAG.png",
+           "JPN-FLAG.png",
+           "SUI-FLAG.png",
+           "AUS-FLAG.png",
+           "CHN-FLAG.png",
+           "SVK-FLAG.png",
+           "SLO-FLAG.png",
+           "ESP_FLAG.png",
+           "BLR-FLAG.png"
+           
+
            ]
+
+gold = (255,215,0)
+silver = (192,192,192)
+bronze = (205,127,50)
+white = (255,255,255)
 
 
 ## Functions and Defines
@@ -129,7 +144,17 @@ def display_flag(country_id,index):
     sense.clear()
     sense.load_image(country_id)
     time.sleep(2.5)
-    sense.show_message("Gold %d  Silver %d  Bronze %d" % (record1.gold[index],record1.silver[index],record1.bronze[index]), scroll_speed=0.2)
+    #sense.show_message("Gold %d  Silver %d  Bronze %d" % (record1.gold[index],record1.silver[index],record1.bronze[index]), scroll_speed=0.2)
+    metal_peg(gold,record1.gold[index])
+    time.sleep(2.5)
+    sense.clear()
+    metal_peg(silver,record1.silver[index])
+    time.sleep(2.5)
+    sense.clear()
+    metal_peg(bronze,record1.bronze[index])
+    time.sleep(2.5)
+    sense.clear()
+
 
 
 def display_loop():
@@ -151,6 +176,9 @@ def display_loop():
         elif (record1.country[x].startswith('Netherlands')):
             print("Netherlands " + str(x))
             display_flag(flag_ID[4],x)
+        elif (record1.country[x].startswith('Switzerland')):
+            print("Switzerland  " + str(x))
+            display_flag(flag_ID[5],x)
         elif (record1.country[x].startswith('Austria')):
             print("Austria " + str(x))
             display_flag(flag_ID[6],x)
@@ -175,13 +203,54 @@ def display_loop():
         elif (record1.country[x].startswith('Sweden')):
             print("Sweden " + str(x))
             display_flag(flag_ID[13],x)
-       # elif (record1.country[x].startswith('Netherlands')):
-       #     print("Netherlands" + str(x))
-       #     display_flag(flag_ID[4],x)
-
+        elif (record1.country[x].startswith('Japan')):
+            print("Japan" + str(x))
+            display_flag(flag_ID[14],x)
+        elif (record1.country[x].startswith('China')):
+            print("China" + str(x))
+            display_flag(flag_ID[15],x)
+        elif (record1.country[x].startswith('Australia')):
+            print("Australia" + str(x))
+            display_flag(flag_ID[16],x)
+        elif (record1.country[x].startswith('Slovakia')):
+            print("Slovakia" + str(x))
+            display_flag(flag_ID[17],x)
+        elif (record1.country[x].startswith('Slovenia')):
+            print("Slovenia" + str(x))
+            display_flag(flag_ID[18],x)
+        elif (record1.country[x].startswith('Spain')):
+            print("Spain" + str(x))
+            display_flag(flag_ID[19],x)
+        elif (record1.country[x].startswith('Bellarus')):
+            print("Bellarus" + str(x))
+            display_flag(flag_ID[20],x)
+        #elif (record1.country[x].startswith('Netherlands')):
+        #    print("Netherlands" + str(x))
+        #    display_flag(flag_ID[4],x)
         else: 
             print("UNKNOWN " + str(x) + " " + str(record1.total[x]) )
             display_flag(flag_ID[5],x)
+
+def metal_peg(type, length):
+    sense.clear()
+    for m in range (0,8):
+        sense.set_pixel(m,0,type)
+        sense.set_pixel(m,1,type)
+    for x in range (0,(length*2),2):
+        if (x < 8): 
+            sense.set_pixel(x,3,white)
+        if (x >= 8 | x < 16):
+            print x
+            sense.set_pixel(x-7,4,white)
+        if (x >=16 | x < 24):
+            print x
+            sense.set_pixel(x-16,5,white)
+        if (x >= 24 | x < 32):
+            print x
+            sense.set_pixel(x-23,6,white)
+        if (x >= 32 | x < 40):
+            print x
+            sense.set_pixel(x-32,7,white)
 
 
 
@@ -195,19 +264,27 @@ record1 = record(0,0,0,0,0,0)		# Data Set Look at dropping zeros
 sense = SenseHat()					# StartUp SenseHat]
 
 ## Scrape CBC Site
-r = requests.get('https://olympics.cbc.ca/medals/index.html')
 
-soup = BeautifulSoup(r.content)
-
-test = soup.findAll('td')
-
-
+def scrape():
+    
+    r = requests.get('https://olympics.cbc.ca/medals/index.html')
+    soup = BeautifulSoup(r.content)
+    test = soup.findAll('td')
+    return test
 
 
 ### Main Program
 
-create()		# Build Data Container
-filter_data()		# Make it All Human Readble
+while(1):
+    
+    test = scrape()
+
+    create()		# Build Data Container
+    filter_data()		# Make it All Human Readble
+    display_loop()
+    del(record1)
+    record1 = record(0,0,0,0,0,0)
+
 
 
 
